@@ -12,7 +12,7 @@ library(ggplot2)
 library(dplyr)
 ```
 ## Loading and preprocessing the data
-1. Load the data (i.e. read.csv())
+### Load the data (i.e. read.csv())
 We assume that the data is there in the working directory and has been unzipped. The data file name is assumed to be activity.csv. We load the data using read.csv
 
 
@@ -20,7 +20,7 @@ We assume that the data is there in the working directory and has been unzipped.
 activity <- read.csv("activity.csv");
 ```
 
-2. Process/transform the data (if necessary) into a format suitable for your analysis
+### Process/transform the data (if necessary) into a format suitable for your analysis
 
 We convert the date column to Date type
 
@@ -195,7 +195,7 @@ sum(is.na(activity$steps))
 
 ### Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
 
-Our strategy is to replace NA value with the mean NA for that interval id. 
+Our strategy is to replace NA value with the mean number of steps for that interval id. 
 
 ### Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
@@ -204,12 +204,13 @@ Following code stores the new data set in the variable *activity_nas_replaced*
 
 ```r
 #Create a new dataset that is equal to the original dataset but with the missing data filled in.
-activity_nas_replaced <- activity %>% group_by(interval) %>% mutate(steps = ifelse(is.na(steps), mean(steps,na.rm=TRUE), steps))
+activity_nas_replaced <- activity %>% group_by(interval) %>% mutate(steps 
+        = ifelse(is.na(steps), mean(steps,na.rm=TRUE), steps))
 ```
 
 ### Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
-We make a nistogram of new total steps per day after imputing values
+We make a nistogram of new total steps per day after imputing values.
 
 
 ```r
@@ -224,9 +225,32 @@ print(hist)
 
 ![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11-1.png) 
 
+We calculate the overall mean and median steps taken per day for data with imputed values. The new mean value = **10766.19** and the new median value = **10766.19**. Yes, the new mean and median values are different from the prior scenario (where NA values were ignored) Based on our strategy, the data distribution has become more like a normal distribution since the NA values were replaced by mean values for each interval. This is also apparent from the histogram.
+
+```r
+# mean and median total number of steps per day
+
+overall_mean_steps_per_day = mean(total_steps_per_day_imputed$total_steps)
+overall_median_steps_per_day = median(total_steps_per_day_imputed$total_steps)
+print(overall_mean_steps_per_day)
+```
+
+```
+## [1] 10766.19
+```
+
+```r
+print (overall_median_steps_per_day)
+```
+
+```
+## [1] 10766.19
+```
 ## Are there differences in activity patterns between weekdays and weekends?
 
 ### Create a new factor variable in the dataset with two levels -- "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
+
+To create a factor variable, we first write a function that returns TRUE, if the day is a week day and FALSE, otherwise. Then we use this function to calculate the factor variable.
 
 
 ```r
@@ -236,7 +260,9 @@ isWeekDay <- function(d) {
 }
 
 # create a new column "day_type" and store in a new data frame "activity_with_weekday"
-activity_with_weekday <-activity_nas_replaced %>% mutate(day_type = factor(isWeekDay(date), levels=c(FALSE, TRUE), labels=c("Weekend", "Weekday")))
+activity_with_weekday <-activity_nas_replaced %>% mutate(
+    day_type = factor(isWeekDay(date), 
+                       levels=c(FALSE, TRUE), labels=c("Weekend", "Weekday")))
 ```
 
 ### Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). The plot should look something like the following, which was created using simulated data:
@@ -244,8 +270,13 @@ activity_with_weekday <-activity_nas_replaced %>% mutate(day_type = factor(isWee
 
 ```r
 avg_steps_by_weekday_weekend <- activity_with_weekday %>% group_by(interval, day_type) %>% summarize(avg_steps_weekday_weekend=mean(steps))
-qplot(interval, avg_steps_weekday_weekend, data=avg_steps_by_weekday_weekend, geom=c("line"),
-   facets= day_type ~ ., main="Steps by Day Type (Weekday/Weekend)", xlab="Interval", ylab="Average Steps Taken")
+qplot(interval, avg_steps_weekday_weekend, 
+      data=avg_steps_by_weekday_weekend, 
+      geom=c("line"),
+      facets= day_type ~ ., 
+      main="Steps by Day Type (Weekday/Weekend)", 
+      xlab="Interval", 
+      ylab="Number of steps")
 ```
 
-![plot of chunk unnamed-chunk-13](figure/unnamed-chunk-13-1.png) 
+![plot of chunk unnamed-chunk-14](figure/unnamed-chunk-14-1.png) 
