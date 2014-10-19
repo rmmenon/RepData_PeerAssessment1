@@ -164,6 +164,21 @@ plot(avg_steps_per_interval$interval, avg_steps_per_interval$avg_steps,
 ```
 
 ![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png) 
+### Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+
+The interval that contains maximum number of steps averaged across all the days is **835** as calculated below:
+
+```r
+avg_steps_per_interval %>% filter(avg_steps == max(avg_steps_per_interval$avg_steps))
+```
+
+```
+## Source: local data frame [1 x 2]
+## 
+##   interval avg_steps
+## 1      835  206.1698
+```
+
 ## Imputing missing values
 
 ### Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
@@ -207,7 +222,7 @@ hist = hist + labs(title="Histogram of Steps per day (Imputed Values)") +
 print(hist)
 ```
 
-![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-10-1.png) 
+![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11-1.png) 
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
@@ -233,4 +248,4 @@ qplot(interval, avg_steps_weekday_weekend, data=avg_steps_by_weekday_weekend, ge
    facets= day_type ~ ., main="Steps by Day Type (Weekday/Weekend)", xlab="Interval", ylab="Average Steps Taken")
 ```
 
-![plot of chunk unnamed-chunk-12](figure/unnamed-chunk-12-1.png) 
+![plot of chunk unnamed-chunk-13](figure/unnamed-chunk-13-1.png) 
